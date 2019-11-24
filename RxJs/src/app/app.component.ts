@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { from, Observable, interval, Observer, Subscription, Subject } from 'rxjs';
-import { throttleTime, map } from 'rxjs/operators';
+import { throttleTime, map, filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -29,7 +29,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     subscription: Subscription;
     ngOnInit(){
-      this.header = "RxJs: Basics in Practice"
+      this.header = "RxJs: Basics in Practice";
       this.subheaderText = [
         '1: Custom Observer',
         '2: Interval Observer',
@@ -96,8 +96,11 @@ export class AppComponent implements OnInit, OnDestroy {
       const intervalObs = interval(1000);
       this.clearSubscription();
       this.subscription = intervalObs.pipe(
-        map((val: number) => val * 2 ),
-        throttleTime(2000)
+        map((val: number) => val),
+        filter((val) => {
+          return val % 2 !== 0;  
+         })
+        // throttleTime(2000)
       ).subscribe(
         (val: number) => this.obs3Data.push(val)
       );
