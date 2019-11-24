@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { from, Observable } from 'rxjs';
+import { from, Observable, interval, Observer, Subscription } from 'rxjs';
 import { throttleTime, map } from 'rxjs/operators';
 
 @Component({
@@ -17,33 +17,38 @@ export class AppComponent implements OnInit, OnDestroy {
     obs2clicked: boolean;
     obs2Data: String[];
 
+    obs3clicked: boolean;
+    obs3Data: Number[];
+
     myObserver: any = {
       next: (x: number) => this.obs2Data.push(`Input of ${x} stored as ${Math.pow(x,2)}`),
       error: (x: any) => this.obs2Data.push(`Error of ${x}`),
       complete: () => this.obs2Data.push(`Complete() on Obs 2 was called`)
     };
 
-    testObs: any;
-
+    testObs: Observable<number | string>;
+    t: Subscription;
     ngOnInit(){
       this.header = "RxJs: Basics in Practice"
-      this.subheaderText = ['Custom Observer'];
+      this.subheaderText = [
+        '1: Custom Observer',
+        '2: Interval Observer',
+        '3:'
+      ];
       this.obs1 = {cx:0, cy:0};
       this.obs1clicked = false;
+
       this.testObs = null;
+
       this.obs2clicked = false;
       this.obs2Data = [];
-      this.makeNewText('RxJS Operators, map() & throttleTime()');
-    }
 
-    makeNewText(header: string){
-      const number = ++ this.subheaderText.length; 
-      const newMessage = `Sub ${number}: ${header}`;
-      this.subheaderText.push(newMessage);
+      this.obs3clicked = false;
+      this.obs3Data = [];
     }
 
     ngOnDestroy(){
-      this.testObs.unsubscribe();
+      // this.testObserver.unsubscribe();
     }
 
     triggerEvent(evtData: any){
@@ -79,5 +84,16 @@ export class AppComponent implements OnInit, OnDestroy {
         },3000);
         obs.next(3);
       }).subscribe(this.myObserver)
+    }
+
+    obs3operators(){
+      this.obs3clicked = true;
+      this.testObs = interval(1000);
+      this.testObs.pipe(
+        map((val: number) => val * 2 ),
+        throttleTime(2000)
+      ).subscribe(
+        (val: number) => this.obs3Data.push(val)
+      );
     }
 }
