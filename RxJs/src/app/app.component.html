@@ -16,9 +16,9 @@
         </div>
       </div>
     </div>
-      <div class="tile is-parent has-background-primary" *ngIf='obs1clicked'>
+      <div class="tile is-parent has-background-grey-darker" *ngIf='obs1clicked'>
         <div class='tile is-6 has-text-grey-lighter'>
-            Observable Result:
+            Observable Result 1:
         </div>
         <div class='tile has-text-grey-lighter'>
           {{obs1.cx}}, {{obs1.cy}}
@@ -26,4 +26,32 @@
     </div>
   </div>
   <hr>
+  <div class='level top-spacer'>
+      <div class='level-item'>
+        <div class='panel'>
+          <div class='panel-heading'>{{subheaderText[0]}}</div>
+          <div class='panel-block'>
+            <div class="field">
+                <label class="label">Trigger Custom Observer: </label>
+                <div class="control">
+                    <button class='button is-dark' (click)="customObservable()">
+                      <span class='icon'><i class="fas fa-exclamation"></i>
+                      </span>&nbsp; | Click Here
+                    </button>
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
+        <div class="tile is-parent has-background-black-ter" *ngIf='obs2clicked'>
+          <div class='tile is-6 has-text-grey-lighter'>
+              Observable 2 Result:
+          </div>
+          <div class='tile has-text-grey-lighter' >
+            <ul class='content'>
+              <li *ngFor="let obs2Readout of obs2Data" class = 'is-lower-roman'>{{obs2Readout}}</li>
+            </ul>
+          </div>
+      </div>
+    </div>
 </div>
