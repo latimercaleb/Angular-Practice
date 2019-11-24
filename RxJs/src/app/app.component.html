@@ -1,13 +1,29 @@
 <div class="container">
-  <div class='level'>
+  <div class='level top-spacer'>
     <div class='level-item'>
       <div class='panel'>
-        <div class='panel-heading'>Marko</div>
+        <div class='panel-heading'>{{header}}</div>
         <div class='panel-block'>
-          asjdnfaksd
-          <button class='button'>adsfasd</button>
+          <div class="field">
+              <label class="label">Trigger Observable: </label>
+              <div class="control">
+                  <button class='button is-dark' (click)="triggerEvent($event)">
+                    <span class='icon'><i class="fas fa-exclamation"></i>
+                    </span>&nbsp; | Click Here
+                  </button>
+              </div>
+            </div>
         </div>
       </div>
     </div>
+      <div class="tile is-parent has-background-primary" *ngIf='obs1clicked'>
+        <div class='tile is-6 has-text-grey-lighter'>
+            Observable Result:
+        </div>
+        <div class='tile has-text-grey-lighter'>
+          {{obs1.cx}}, {{obs1.cy}}
+        </div>
+    </div>
   </div>
+  <hr>
 </div>
