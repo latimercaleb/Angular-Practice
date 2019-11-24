@@ -26,8 +26,7 @@ export class AppComponent implements OnInit, OnDestroy {
       complete: () => this.obs2Data.push(`Complete() on Obs 2 was called`)
     };
 
-    testObs: Observable<number | string>;
-    t: Subscription;
+    subscription: Subscription;
     ngOnInit(){
       this.header = "RxJs: Basics in Practice"
       this.subheaderText = [
@@ -38,7 +37,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.obs1 = {cx:0, cy:0};
       this.obs1clicked = false;
 
-      this.testObs = null;
+      this.subscription = null;
 
       this.obs2clicked = false;
       this.obs2Data = [];
@@ -48,14 +47,15 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(){
-      // this.testObserver.unsubscribe();
+      this.subscription.unsubscribe();
     }
 
     triggerEvent(evtData: any){
       this.obs1clicked = true;
+      this.clearSubscription();
       console.dir(`OBS_1: Show data: ${evtData}`);
-      const clickData = from([evtData]);
-      clickData.pipe(
+      
+      const clickData = from([evtData]).pipe(
         throttleTime(1000),
         map((evtData) => {
           return {
@@ -63,7 +63,9 @@ export class AppComponent implements OnInit, OnDestroy {
             yCoordinate: evtData.clientY
           }
         })
-      ).subscribe(
+      );
+      
+      this.subscription = clickData.subscribe(
         (evtData) => {
           console.log('asdfa');
           this.obs1.cx = evtData.xCoordinate;
@@ -76,24 +78,36 @@ export class AppComponent implements OnInit, OnDestroy {
 
     customObservable(){
       this.obs2clicked = true;
-      this.testObs = Observable.create(function(obs){
+      const customObs = Observable.create(function(obs){
         obs.next(2);
         //obs.error('asudhf');    
         setTimeout(() => {
           obs.complete();
         },3000);
         obs.next(3);
-      }).subscribe(this.myObserver)
+      });
+      this.clearSubscription();
+      this.subscription = customObs.subscribe(this.myObserver);
     }
 
     obs3operators(){
       this.obs3clicked = true;
-      this.testObs = interval(1000);
-      this.testObs.pipe(
+      const intervalObs = interval(1000);
+      this.clearSubscription();
+      this.subscription = intervalObs.pipe(
         map((val: number) => val * 2 ),
         throttleTime(2000)
       ).subscribe(
         (val: number) => this.obs3Data.push(val)
       );
+    }
+
+    private clearSubscription(){
+      console.log('Checking subscription');
+      if (this.subscription){
+        this.subscription.unsubscribe();
+      }else{
+        return true;
+      }
     }
 }
