@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { from, Observable, interval, Observer, Subscription, Subject } from 'rxjs';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { from, Observable, interval, Observer, Subscription, Subject, fromEvent } from 'rxjs';
 import { throttleTime, map, filter } from 'rxjs/operators';
 
 @Component({
@@ -28,12 +28,15 @@ export class AppComponent implements OnInit, OnDestroy {
     };
 
     subscription: Subscription;
+    @ViewChild('inp') myInput: ElementRef;
+
     ngOnInit(){
       this.header = "RxJs: Basics in Practice";
       this.subheaderText = [
         '1: Custom Observer',
         '2: Interval Observer',
-        '3: Manual Subject'
+        '3: Manual Subject',
+        '4: Operators debounceTime() & distinctUntilChanged()'
       ];
       this.obs1 = {cx:0, cy:0};
       this.obs1clicked = false;
@@ -123,6 +126,13 @@ export class AppComponent implements OnInit, OnDestroy {
       subject.next('Another test');
 
       other.unsubscribe();
+    }
+
+    obs4chain(evt: InputEvent){
+      console.log(this.myInput);
+      const observable = fromEvent(this.myInput.nativeElement, 'input'); // Need to test further
+      this.clearSubscription();
+      this.subscription = observable.subscribe();
     }
 
     private clearSubscription(){

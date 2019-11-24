@@ -67,9 +67,10 @@
                       <span class='icon'><i class="fas fa-exclamation"></i>
                       </span>&nbsp; | Click Here
                     </button>
+                    |
                     <button class='button is-dark' (click)="subject1()">
                         <span class='icon'><i class="fas fa-exclamation"></i>
-                        </span>&nbsp; | Click Here to trigger subject in console
+                        </span>&nbsp; | Click Here to trigger {{subheaderText[2]}}
                       </button>
                 </div>
               </div>
@@ -86,5 +87,22 @@
             </ul>
           </div>
       </div>
+  </div>
+  <hr>
+  <div class='level top-spacer'>
+    <div class='level-item'>
+      <div class='panel'>
+        <div class='panel-heading'>{{subheaderText[3]}}</div>
+        <div class='panel-block'>
+          <div class="field">
+              <label class="label">Trigger Observables: </label>
+              <div class="control">
+                <input class='input is-primary' type='text' placeholder="enter some text" (input)='obs4chain($event)' #inp/>
+              </div>
+            </div>
+        </div>
+      </div>
     </div>
+  </div>
+  <hr>
 </div>
