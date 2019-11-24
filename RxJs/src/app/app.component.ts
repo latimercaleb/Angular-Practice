@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { from, Observable, interval, Observer, Subscription } from 'rxjs';
+import { from, Observable, interval, Observer, Subscription, Subject } from 'rxjs';
 import { throttleTime, map } from 'rxjs/operators';
 
 @Component({
@@ -20,6 +20,7 @@ export class AppComponent implements OnInit, OnDestroy {
     obs3clicked: boolean;
     obs3Data: Number[];
 
+
     myObserver: any = {
       next: (x: number) => this.obs2Data.push(`Input of ${x} stored as ${Math.pow(x,2)}`),
       error: (x: any) => this.obs2Data.push(`Error of ${x}`),
@@ -32,7 +33,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.subheaderText = [
         '1: Custom Observer',
         '2: Interval Observer',
-        '3:'
+        '3: Manual Subject'
       ];
       this.obs1 = {cx:0, cy:0};
       this.obs1clicked = false;
@@ -100,6 +101,25 @@ export class AppComponent implements OnInit, OnDestroy {
       ).subscribe(
         (val: number) => this.obs3Data.push(val)
       );
+    }
+
+    subject1(){
+      const subject = new Subject();
+      let temp = subject.subscribe({
+        next: (x) => console.log('Val ' + x)
+      });
+
+      let other = subject.subscribe({
+        next: (x) => console.log('Val2 ' + x)
+      });
+
+      subject.next('Test Data');
+
+      temp.unsubscribe();
+
+      subject.next('Another test');
+
+      other.unsubscribe();
     }
 
     private clearSubscription(){
