@@ -128,12 +128,17 @@ export class AppComponent implements OnInit, OnDestroy {
       other.unsubscribe();
     }
 
-    obs4chain(evt: InputEvent){
-      console.log(this.myInput);
-      const observable = fromEvent(this.myInput.nativeElement, 'input'); // Need to test further
+    obs4chain(){
       this.clearSubscription();
-      this.subscription = observable.subscribe();
+      const observable = fromEvent(this.myInput.nativeElement, 'input');
+
+      this.subscription = observable.subscribe(
+        (evt) => console.log(evt)
+      );
+      
     }
+
+  
 
     private clearSubscription(){
       console.log('Checking subscription');
