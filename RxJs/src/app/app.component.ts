@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { from, Observable, interval, Subscription, Subject, fromEvent, of } from 'rxjs';
-import { throttleTime, map, filter, debounceTime, distinctUntilChanged, reduce, scan, pluck, mergeMap } from 'rxjs/operators';
+import { throttleTime, map, filter, debounceTime, distinctUntilChanged, reduce, scan, pluck, mergeMap, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -36,6 +36,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild('upper') upper: ElementRef;
     @ViewChild('lower') lower: ElementRef;
 
+    @ViewChild('switchClick') switchClick: ElementRef;
+    switchMms: string;
+
     ngOnInit(){
       this.header = "RxJs: Basics in Practice";
       this.subheaderText = [
@@ -61,6 +64,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       this.mergemapResult = '';
       
       this.obs4Result = '';
+      
+      this.switchMms = '';
     }
 
     ngOnDestroy(){
@@ -97,7 +102,22 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       )).subscribe(
         (evt) => this.mergemapResult = <string>evt
-      )
+      );
+
+      const obs6_1 = fromEvent(this.switchClick.nativeElement, 'click');
+      const obs6_2 = interval(1000);
+      obs6_1.pipe(
+        switchMap(
+          evt => {
+            return obs6_2;
+          }
+        )
+        ).subscribe(
+          (val) => {
+            let mms = `SwitchMap: ${val}`
+            console.log(mms)
+            this.switchMms = mms;
+          });
 
     }
 

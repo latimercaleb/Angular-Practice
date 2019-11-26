@@ -140,8 +140,14 @@
           <div class="field">
               <label class="label">Trigger SwitchMap: </label>
               <div class="control">
-                <input class='input is-primary' type='text' placeholder="enter some text" (input)='obs4chain()' #inp/>
+                <button class='button is-dark' #switchClick>
+                  <span class='icon'><i class="fas fa-exclamation"></i>
+                  </span>&nbsp; | Click Here to trigger switchMap()
+                </button>
               </div>
+              <p>
+                <b>{{switchMms}}</b>
+              </p>
             </div>
         </div>
       </div>
