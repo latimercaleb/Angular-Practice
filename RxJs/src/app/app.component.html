@@ -162,8 +162,14 @@
           <div class="field">
               <label class="label">Trigger Behavior Subject: </label>
               <div class="control">
-                <input class='input is-primary' type='text' placeholder="enter some text" (input)='obs4chain()' #inp/>
+                <button class='button is-dark' (click)='behaviorObs()'>
+                  <span class='icon'><i class="fas fa-exclamation"></i>
+                  </span>&nbsp; | Click Here to trigger the behavior to change()
+                </button>
               </div>
+              <p>
+                <b>{{behaviorTxt}}</b>
+              </p>
             </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
-import { from, Observable, interval, Subscription, Subject, fromEvent, of } from 'rxjs';
+import { from, Observable, interval, Subscription, Subject, fromEvent, of, BehaviorSubject } from 'rxjs';
 import { throttleTime, map, filter, debounceTime, distinctUntilChanged, reduce, scan, pluck, mergeMap, switchMap } from 'rxjs/operators';
 
 @Component({
@@ -39,6 +39,10 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild('switchClick') switchClick: ElementRef;
     switchMms: string;
 
+    behaviorTxt: string;
+
+    clickSubjectClicked: BehaviorSubject<string>;
+
     ngOnInit(){
       this.header = "RxJs: Basics in Practice";
       this.subheaderText = [
@@ -66,6 +70,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       this.obs4Result = '';
       
       this.switchMms = '';
+      this.behaviorTxt = '';
+      this.clickSubjectClicked = new BehaviorSubject('Default text');
     }
 
     ngOnDestroy(){
@@ -118,6 +124,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
             console.log(mms)
             this.switchMms = mms;
           });
+
+      
 
     }
 
@@ -219,6 +227,17 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       ).subscribe(
         (val) => console.log('Scan total sum ', val)
       );
+    }
+
+    behaviorObs(){
+      this.clearSubscription();
+      this.subscription = this.clickSubjectClicked.subscribe(
+        (val) => {
+          this.behaviorTxt = val;
+          console.log('Clicked')
+        }
+      );
+      this.clickSubjectClicked.next('Clicked!');
     }
   
 
