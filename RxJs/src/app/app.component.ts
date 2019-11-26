@@ -1,13 +1,13 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
-import { from, Observable, interval, Observer, Subscription, Subject, fromEvent } from 'rxjs';
-import { throttleTime, map, filter } from 'rxjs/operators';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { from, Observable, interval, Subscription, Subject, fromEvent, of } from 'rxjs';
+import { throttleTime, map, filter, debounceTime, distinctUntilChanged, reduce, scan } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     header: String;
     subheaderText: String[];
 
@@ -52,6 +52,11 @@ export class AppComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(){
       this.subscription.unsubscribe();
+    }
+
+    ngAfterViewInit(){
+      this.reducevsscan();
+      this.scanvsreduce();
     }
 
     triggerEvent(evtData: any){
@@ -130,12 +135,46 @@ export class AppComponent implements OnInit, OnDestroy {
 
     obs4chain(){
       this.clearSubscription();
-      const observable = fromEvent(this.myInput.nativeElement, 'input');
+      const observable = fromEvent(document, 'input');
 
-      this.subscription = observable.subscribe(
+      this.subscription = observable.pipe(
+        map(<InputEvent>(eventInfo) => eventInfo.target.value),
+        debounceTime(500),
+        distinctUntilChanged()
+      ).subscribe(
         (evt) => console.log(evt)
       );
       
+    }
+
+    reducevsscan(){
+      this.clearSubscription();
+      const observable = of([1,2,3,4,5]);
+      this.subscription = observable.pipe(
+        reduce(
+          (total: number, currentVal: number[], idx: number) => {
+            return currentVal.reduce((total=0, currentVal) => {
+              return total + currentVal;
+            });
+          }, 0)
+      ).subscribe(
+        (val) => console.log('Reduce total sum ', val)
+      );
+    }
+
+    scanvsreduce(){
+      this.clearSubscription();
+      const observable = of([1,2,3,4,5]);
+      this.subscription = observable.pipe(
+        scan(
+          (total: number, currentVal: number[], idx: number) => {
+            return currentVal.reduce((total=0, currentVal) => {
+              return total + currentVal;
+            });
+          }, 0)
+      ).subscribe(
+        (val) => console.log('Scan total sum ', val)
+      );
     }
 
   
