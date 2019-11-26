@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { from, Observable, interval, Subscription, Subject, fromEvent, of } from 'rxjs';
-import { throttleTime, map, filter, debounceTime, distinctUntilChanged, reduce, scan } from 'rxjs/operators';
+import { throttleTime, map, filter, debounceTime, distinctUntilChanged, reduce, scan, pluck } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -138,7 +138,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       const observable = fromEvent(document, 'input');
 
       this.subscription = observable.pipe(
-        map(<InputEvent>(eventInfo) => eventInfo.target.value),
+        // map(<InputEvent>(eventInfo) => eventInfo.target.value),
+        pluck('target','value'),
         debounceTime(500),
         distinctUntilChanged()
       ).subscribe(
