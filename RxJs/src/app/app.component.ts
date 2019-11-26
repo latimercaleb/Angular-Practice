@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { from, Observable, interval, Subscription, Subject, fromEvent, of } from 'rxjs';
-import { throttleTime, map, filter, debounceTime, distinctUntilChanged, reduce, scan, pluck } from 'rxjs/operators';
+import { throttleTime, map, filter, debounceTime, distinctUntilChanged, reduce, scan, pluck, mergeMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -20,7 +20,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     obs3clicked: boolean;
     obs3Data: Number[];
 
-
     myObserver: any = {
       next: (x: number) => this.obs2Data.push(`Input of ${x} stored as ${Math.pow(x,2)}`),
       error: (x: any) => this.obs2Data.push(`Error of ${x}`),
@@ -28,7 +27,14 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     };
 
     subscription: Subscription;
+    altsubscription: Subscription;
+
     @ViewChild('inp') myInput: ElementRef;
+    obs4Result: string;
+
+    mergemapResult: string;
+    @ViewChild('upper') upper: ElementRef;
+    @ViewChild('lower') lower: ElementRef;
 
     ngOnInit(){
       this.header = "RxJs: Basics in Practice";
@@ -36,7 +42,10 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
         '1: Custom Observer',
         '2: Interval Observer',
         '3: Manual Subject',
-        '4: Operators debounceTime() & distinctUntilChanged()'
+        '4: Operators debounceTime() & distinctUntilChanged()',
+        '5: Merge Map()',
+        '6: SwitchMap()',
+        '7: BehaviorSubject()'
       ];
       this.obs1 = {cx:0, cy:0};
       this.obs1clicked = false;
@@ -48,6 +57,10 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
       this.obs3clicked = false;
       this.obs3Data = [];
+
+      this.mergemapResult = '';
+      
+      this.obs4Result = '';
     }
 
     ngOnDestroy(){
@@ -57,6 +70,35 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     ngAfterViewInit(){
       this.reducevsscan();
       this.scanvsreduce();
+      this.clearSubscription();
+      const obs4 = fromEvent(this.myInput.nativeElement, 'input');
+      this.subscription = obs4.pipe(
+        pluck('target','value'),
+        debounceTime(2000),
+        distinctUntilChanged()
+      ).subscribe(
+        (evt: string) => {
+          console.log(evt);
+          this.obs4Result = evt;
+        });
+      
+      const obs5_1 = fromEvent(this.upper.nativeElement, 'input');
+      const obs5_2 = fromEvent(this.lower.nativeElement, 'input');
+      obs5_1.pipe(
+        pluck('target','value'),
+        mergeMap(
+        resOfEvt5_1 => {
+          return obs5_2.pipe(
+            pluck('target','value'),
+            map(
+              (obs5_2_data) => resOfEvt5_1 + " & " + obs5_2_data
+            )
+          )
+        }
+      )).subscribe(
+        (evt) => this.mergemapResult = <string>evt
+      )
+
     }
 
     triggerEvent(evtData: any){
@@ -133,30 +175,13 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       other.unsubscribe();
     }
 
-    obs4chain(){
-      this.clearSubscription();
-      const observable = fromEvent(document, 'input');
-
-      this.subscription = observable.pipe(
-        // map(<InputEvent>(eventInfo) => eventInfo.target.value),
-        pluck('target','value'),
-        debounceTime(500),
-        distinctUntilChanged()
-      ).subscribe(
-        (evt) => console.log(evt)
-      );
-      
-    }
-
     reducevsscan(){
       this.clearSubscription();
-      const observable = of([1,2,3,4,5]);
+      const observable = of(1,2,3,4,5);
       this.subscription = observable.pipe(
         reduce(
-          (total: number, currentVal: number[], idx: number) => {
-            return currentVal.reduce((total=0, currentVal) => {
-              return total + currentVal;
-            });
+          (total, currentVal) => {
+            return total + currentVal;
           }, 0)
       ).subscribe(
         (val) => console.log('Reduce total sum ', val)
@@ -165,19 +190,16 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
     scanvsreduce(){
       this.clearSubscription();
-      const observable = of([1,2,3,4,5]);
+      const observable = of(1,2,3,4,5);
       this.subscription = observable.pipe(
         scan(
-          (total: number, currentVal: number[], idx: number) => {
-            return currentVal.reduce((total=0, currentVal) => {
+          (total, currentVal) => {
               return total + currentVal;
-            });
           }, 0)
       ).subscribe(
         (val) => console.log('Scan total sum ', val)
       );
     }
-
   
 
     private clearSubscription(){

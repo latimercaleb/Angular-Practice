@@ -95,7 +95,66 @@
         <div class='panel-heading'>{{subheaderText[3]}}</div>
         <div class='panel-block'>
           <div class="field">
-              <label class="label">Trigger Observables: </label>
+              <label class="label">Trigger Debounce Observables: </label>
+              <div class="control">
+                <input  class='input is-primary' type='text' placeholder="enter some text" #inp/>
+                <span>{{obs4Result}}</span>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr>
+  <div class='level top-spacer'>
+    <div class='level-item'>
+      <div class='panel'>
+        <div class='panel-heading'>{{subheaderText[4]}}</div>
+        <div class='panel-block'>
+          <div class="field">
+              <label class="label">Trigger MergeMap: </label>
+              <div class="control bot-spacer">
+                <input class='input is-primary' type='text' placeholder="First Obs text" #upper/>
+              </div>
+              <div class="control">
+                <input class='input is-info' type='text' placeholder="Second Obs text" #lower/>
+              </div>
+              <div>
+                <span>
+                  <b>
+                    {{mergemapResult}}
+                  </b>
+                </span>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr>
+  <div class='level top-spacer'>
+    <div class='level-item'>
+      <div class='panel'>
+        <div class='panel-heading'>{{subheaderText[5]}}</div>
+        <div class='panel-block'>
+          <div class="field">
+              <label class="label">Trigger SwitchMap: </label>
+              <div class="control">
+                <input class='input is-primary' type='text' placeholder="enter some text" (input)='obs4chain()' #inp/>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr>
+  <div class='level top-spacer'>
+    <div class='level-item'>
+      <div class='panel'>
+        <div class='panel-heading'>{{subheaderText[6]}}</div>
+        <div class='panel-block'>
+          <div class="field">
+              <label class="label">Trigger Behavior Subject: </label>
               <div class="control">
                 <input class='input is-primary' type='text' placeholder="enter some text" (input)='obs4chain()' #inp/>
               </div>
