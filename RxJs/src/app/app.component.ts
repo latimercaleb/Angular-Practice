@@ -46,13 +46,13 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     ngOnInit(){
       this.header = "RxJs: Basics in Practice";
       this.subheaderText = [
-        '1: Custom Observer',
-        '2: Interval Observer',
-        '3: Manual Subject',
-        '4: Operators debounceTime() & distinctUntilChanged()',
-        '5: Merge Map()',
-        '6: SwitchMap()',
-        '7: BehaviorSubject()'
+        '2: Custom Observer',
+        '3: Interval Observer',
+        '4: Manual Subject',
+        '5: Operators debounceTime() & distinctUntilChanged()',
+        '6: Merge Map()',
+        '7: SwitchMap()',
+        '8: BehaviorSubject()'
       ];
       this.obs1 = {cx:0, cy:0};
       this.obs1clicked = false;
