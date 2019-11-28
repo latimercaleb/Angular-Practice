@@ -64,11 +64,11 @@
     "forceConsistentCasingInFileNames": true  /* Disallow inconsistently-cased references to the same file. */
   },
   "exclude":[
-    "src/backup.ts",
     "node_modules"
   ],
   "include": [
-    "src/esNextPractice.ts"
+    "src/app.ts",
+    "src/backup.ts"
   ]
 
 }
