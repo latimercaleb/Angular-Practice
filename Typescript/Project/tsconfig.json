@@ -68,7 +68,7 @@
     "node_modules"
   ],
   "include": [
-    "src/app.ts"
+    "src/esNextPractice.ts"
   ]
 
 }
