@@ -67,8 +67,7 @@
     "node_modules"
   ],
   "include": [
-    "src/app.ts",
-    "src/backup.ts"
+    "src/app.ts"
   ]
 
 }
