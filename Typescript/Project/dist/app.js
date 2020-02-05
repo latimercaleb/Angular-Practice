@@ -59,3 +59,14 @@ function moveAnimal(animal) {
     console.log(`Moving with speed: ${speed}`);
 }
 moveAnimal({ type: 'bird', flyingSpeed: 25 });
+// Type Casting
+const pTag = document.querySelector('p'); // Returns HTMLParagraphElement | null
+const pTagById = document.getElementById('testId'); // Returns HTMLElement | null, TS can't infer what html element since I didn't fetch it
+const input = document.getElementById('input'); // Adding the exclamation point means not null
+// input.value = 'Hello Error';  // Renders, but throws a TS err because TS doesn't recognize it as an input
+// Method 1- Pre-cast: Include type for property in front with <>, ok for Angular, bad for React
+const castedInput = document.getElementById('input');
+castedInput.value = 'Hello Success1';
+// Method 2- Post-cast: Include type for property after with as keyword, good for either or
+const secondCastedInput = document.getElementById('input');
+castedInput.value = 'Hello Success2';
