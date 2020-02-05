@@ -121,7 +121,7 @@ castedInput.value = 'Hello Success1';
 const secondCastedInput = document.getElementById('input')! as HTMLInputElement; 
 castedInput.value = 'Hello Success2'; 
 
-
+// Index Properties
 
 
 
