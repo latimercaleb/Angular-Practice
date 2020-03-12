@@ -1,16 +1,18 @@
 // Drag n Drop App 
 // In single file for now, will be expanded into multi-files later
 
-function autoBind(trgt: any, methodname: string, descriptor: PropertyDescriptor){
+
+function autobind(trgt: any, methodname: string, descriptor: PropertyDescriptor){
     const originalMethod = descriptor.value;
     const adjDescriptor: PropertyDescriptor = {
         configurable: true,
         get(){
-            
+            const boundContext = originalMethod.bind(this);
+            return boundContext;
         }
     }
+    return adjDescriptor;
 }
-
 // Associate classes to each part of the template
 class ProjectInput{
     templateRoot: HTMLTemplateElement;
@@ -33,18 +35,44 @@ class ProjectInput{
         this.descriptionInput = this.element.querySelector('#description') as HTMLInputElement;
         this.peopleInput = this.element.querySelector('#people') as HTMLInputElement;
 
-        // Rather than this, it's better idea to use a decorator
-        // this.element.addEventListener('submit', this.submitHandler.bind(this));
-
+        this.configureEvents();
         this.attachMarkup();
     }
+    
     private attachMarkup(){
         this.hostElement.insertAdjacentElement("afterbegin", this.element);
     }
-    @autoBind
+
+    private configureEvents(){
+        // Rather than binding this, it's better idea to use a decorator
+        // this.element.addEventListener('submit', this.submitHandler.bind(this));
+        this.element.addEventListener('submit', this.submitHandler);
+    }
+
+    private collectInput(): [string, string, number]{
+        const title = this.titleInput.value;
+        const descript = this.descriptionInput.value;
+        const ppl = this.peopleInput.value;
+
+        //Validate input 
+
+        return [title, descript, parseInt(ppl)];
+    }
+
+    private clearInput(){
+        this.titleInput.value = '';
+        this.descriptionInput.value = '';
+        this.peopleInput.value = '';
+    }
+
+    @autobind
     private submitHandler(evt: Event){
         evt.preventDefault();
-        console.log(this.titleInput.value);
+        const usrInput = this.collectInput();
+        // Check type of return
+        const [title, descript,ppl] = usrInput;
+        console.log(title,descript,ppl);
+        this.clearInput();
     }
 }
 

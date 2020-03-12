@@ -7,13 +7,16 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-function autoBind(trgt, methodname, descriptor) {
+function autobind(trgt, methodname, descriptor) {
     const originalMethod = descriptor.value;
     const adjDescriptor = {
         configurable: true,
         get() {
+            const boundContext = originalMethod.bind(this);
+            return boundContext;
         }
     };
+    return adjDescriptor;
 }
 // Associate classes to each part of the template
 class ProjectInput {
@@ -26,19 +29,39 @@ class ProjectInput {
         this.titleInput = this.element.querySelector('#title');
         this.descriptionInput = this.element.querySelector('#description');
         this.peopleInput = this.element.querySelector('#people');
-        // Rather than this, it's better idea to use a decorator
-        // this.element.addEventListener('submit', this.submitHandler.bind(this));
+        this.configureEvents();
         this.attachMarkup();
     }
     attachMarkup() {
         this.hostElement.insertAdjacentElement("afterbegin", this.element);
     }
+    configureEvents() {
+        // Rather than binding this, it's better idea to use a decorator
+        // this.element.addEventListener('submit', this.submitHandler.bind(this));
+        this.element.addEventListener('submit', this.submitHandler);
+    }
+    collectInput() {
+        const title = this.titleInput.value;
+        const descript = this.descriptionInput.value;
+        const ppl = this.peopleInput.value;
+        //Validate input 
+        return [title, descript, parseInt(ppl)];
+    }
+    clearInput() {
+        this.titleInput.value = '';
+        this.descriptionInput.value = '';
+        this.peopleInput.value = '';
+    }
     submitHandler(evt) {
         evt.preventDefault();
-        console.log(this.titleInput.value);
+        const usrInput = this.collectInput();
+        // Check type of return
+        const [title, descript, ppl] = usrInput;
+        console.log(title, descript, ppl);
+        this.clearInput();
     }
 }
 __decorate([
-    autoBind
+    autobind
 ], ProjectInput.prototype, "submitHandler", null);
 const projectInputInjection = new ProjectInput();
