@@ -7,6 +7,36 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+// State manager
+class ProjectState {
+    constructor() {
+        this.projects = [];
+        this.listeners = [];
+    }
+    static getInstance() {
+        if (this.instance) {
+            return this.instance;
+        }
+        this.instance = new ProjectState();
+        return this.instance;
+    }
+    addProject(title, description, numberOfPpl) {
+        const newProject = {
+            id: Math.random().toString(),
+            title: title,
+            description: description,
+            people: numberOfPpl
+        };
+        this.projects.push(newProject);
+        for (const listeners of this.listeners) {
+            listeners(this.projects.slice());
+        }
+    }
+    addListener(listnerFn) {
+        this.listeners.push(listnerFn);
+    }
+}
+const projectState = ProjectState.getInstance();
 function validate(input) {
     let isValid = true;
     if (input.required) {
@@ -100,6 +130,7 @@ class ProjectInput {
         if (Array.isArray(usrInput)) {
             const [title, descript, ppl] = usrInput;
             // console.log(title,descript,ppl);
+            projectState.addProject(title, descript, ppl);
             this.clearInput();
         }
     }
@@ -112,11 +143,24 @@ class ProjectList {
         this.type = type;
         this.templateRoot = document.getElementById('project-list');
         this.hostElement = document.getElementById('app');
+        this.assignedProjects = [];
         const importedDOMNode = document.importNode(this.templateRoot.content, true);
         this.element = importedDOMNode.firstElementChild;
         this.element.id = `${this.type}-projects`;
+        projectState.addListener((projects) => {
+            this.assignedProjects = projects;
+            this.renderProjects();
+        });
         this.attachMarkup();
         this.renderContent();
+    }
+    renderProjects() {
+        const listEl = document.getElementById(`${this.type}-projects-list`);
+        for (const prjItm of this.assignedProjects) {
+            const listItem = document.createElement('li');
+            listItem.textContent = prjItm.title;
+            listEl.appendChild(listItem);
+        }
     }
     attachMarkup() {
         this.hostElement.insertAdjacentElement("beforeend", this.element);
@@ -125,6 +169,8 @@ class ProjectList {
         const listId = `${this.type}-projects-list`;
         this.element.querySelector('ul').id = listId;
         this.element.querySelector('h2').textContent = this.type.toLocaleUpperCase() + ' PROJECTS';
+    }
+    addProject() {
     }
 }
 class ProjecListItem {
