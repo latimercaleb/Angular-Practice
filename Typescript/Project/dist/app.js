@@ -7,6 +7,25 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+function validate(input) {
+    let isValid = true;
+    if (input.required) {
+        isValid = isValid && input.value.toString().trim().length !== 0;
+    }
+    if (input.minLength && typeof input.value === 'string') {
+        isValid = isValid && input.value.length > input.minLength;
+    }
+    if (input.maxLength && typeof input.value === 'string') {
+        isValid = isValid && input.value.length < input.maxLength;
+    }
+    if (input.min != null && typeof input.value === 'number') {
+        isValid = isValid && input.value > input.min;
+    }
+    if (input.max != null && typeof input.value === 'number') {
+        isValid = isValid && input.value < input.max;
+    }
+    return isValid;
+}
 function autobind(trgt, methodname, descriptor) {
     const originalMethod = descriptor.value;
     const adjDescriptor = {
@@ -44,8 +63,30 @@ class ProjectInput {
         const title = this.titleInput.value;
         const descript = this.descriptionInput.value;
         const ppl = this.peopleInput.value;
+        const titleValidator = {
+            value: title,
+            required: true
+        };
+        const descriptValidator = {
+            value: descript,
+            required: true,
+            minLength: 5
+        };
+        const pplValidator = {
+            value: +ppl,
+            required: true,
+            min: 1,
+            max: 5
+        };
         //Validate input 
-        return [title, descript, parseInt(ppl)];
+        if (validate(titleValidator) &&
+            validate(descriptValidator) &&
+            validate(pplValidator)) {
+            return [title, descript, parseInt(ppl)];
+        }
+        else {
+            alert(`Invalid input`);
+        }
     }
     clearInput() {
         this.titleInput.value = '';
@@ -56,6 +97,7 @@ class ProjectInput {
         evt.preventDefault();
         const usrInput = this.collectInput();
         // Check type of return
+        debugger;
         const [title, descript, ppl] = usrInput;
         console.log(title, descript, ppl);
         this.clearInput();
