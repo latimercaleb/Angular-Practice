@@ -97,13 +97,38 @@ class ProjectInput {
         evt.preventDefault();
         const usrInput = this.collectInput();
         // Check type of return
-        debugger;
-        const [title, descript, ppl] = usrInput;
-        console.log(title, descript, ppl);
-        this.clearInput();
+        if (Array.isArray(usrInput)) {
+            const [title, descript, ppl] = usrInput;
+            // console.log(title,descript,ppl);
+            this.clearInput();
+        }
     }
 }
 __decorate([
     autobind
 ], ProjectInput.prototype, "submitHandler", null);
+class ProjectList {
+    constructor(type) {
+        this.type = type;
+        this.templateRoot = document.getElementById('project-list');
+        this.hostElement = document.getElementById('app');
+        const importedDOMNode = document.importNode(this.templateRoot.content, true);
+        this.element = importedDOMNode.firstElementChild;
+        this.element.id = `${this.type}-projects`;
+        this.attachMarkup();
+        this.renderContent();
+    }
+    attachMarkup() {
+        this.hostElement.insertAdjacentElement("beforeend", this.element);
+    }
+    renderContent() {
+        const listId = `${this.type}-projects-list`;
+        this.element.querySelector('ul').id = listId;
+        this.element.querySelector('h2').textContent = this.type.toLocaleUpperCase() + ' PROJECTS';
+    }
+}
+class ProjecListItem {
+}
 const projectInputInjection = new ProjectInput();
+const activePrjList = new ProjectList('active');
+const finishedPrjList = new ProjectList('finished');

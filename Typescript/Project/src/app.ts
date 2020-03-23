@@ -42,7 +42,7 @@ function autobind(trgt: any, methodname: string, descriptor: PropertyDescriptor)
     return adjDescriptor;
 }
 // Associate classes to each part of the template
-class ProjectInput{
+class ProjectInput {
     templateRoot: HTMLTemplateElement;
     hostElement: HTMLDivElement;
     element: HTMLFormElement;
@@ -123,11 +123,49 @@ class ProjectInput{
         evt.preventDefault();
         const usrInput = this.collectInput();
         // Check type of return
-        debugger;
-        const [title, descript,ppl] = usrInput;
-        console.log(title,descript,ppl);
-        this.clearInput();
+        if (Array.isArray(usrInput)){
+            const [title, descript,ppl] = usrInput;
+            // console.log(title,descript,ppl);
+            this.clearInput();
+        }
+        
     }
 }
 
+class ProjectList {
+    templateRoot: HTMLTemplateElement;
+    hostElement: HTMLDivElement;
+    element: HTMLElement;
+
+    constructor(private type: 'active' | 'finished'){ // Constructor inject, type is now a private member of the class
+        this.templateRoot = <HTMLTemplateElement>document.getElementById('project-list')!; 
+        this.hostElement = document.getElementById('app')! as HTMLDivElement;
+
+        const importedDOMNode = document.importNode(this.templateRoot.content, true);
+        this.element = importedDOMNode.firstElementChild as HTMLElement;
+        this.element.id = `${this.type}-projects`;
+
+        this.attachMarkup();
+        this.renderContent();
+    }
+
+    private attachMarkup(){
+        this.hostElement.insertAdjacentElement("beforeend", this.element);
+    }
+
+    private renderContent(){
+        const listId = `${this.type}-projects-list`;
+        this.element.querySelector('ul')!.id = listId;
+        this.element.querySelector('h2')!.textContent = this.type.toLocaleUpperCase() + ' PROJECTS';
+
+    }
+}
+
+class ProjecListItem {
+
+}
+
+
 const projectInputInjection = new ProjectInput();
+const activePrjList = new ProjectList('active');
+const finishedPrjList = new ProjectList('finished');
